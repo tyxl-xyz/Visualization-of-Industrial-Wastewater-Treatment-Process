@@ -5,6 +5,8 @@
 
   var POOL_W = 230, POOL_H = 225; // 池体节点尺寸（放大，SVG 占主体）
   var DEV_W = 100, DEV_H = 100;   // 设备节点尺寸
+  var PIPE_W = 320, PIPE_H = 64;  // 加药管道（横版）节点尺寸
+  var VPIPE_W = 42, VPIPE_H = 190; // 加药管道（竖版）节点尺寸
 
   // 三区颜色（用户指定：物化段=蓝、生化段=绿（适配生物/生态），调节池区青绿色区分）
   var COLOR_PHYS = '#3d8bff';
@@ -143,7 +145,7 @@
     return '<div class="pool-node">' +
       '<div class="pool-svg">' + svg + '</div>' +
       '<div class="pool-meta">' +
-      '<div class="pool-title">' + d.poolName +
+      '<div class="pool-title"><span class="pool-name">' + d.poolName + '</span>' +
       '<span class="pool-status st-' + stKey + '">' + STATUS_TEXT[stKey] + '</span></div>' +
       '<div class="pool-params">' + paramsHtml + '</div>' +
       '</div>' +
@@ -153,6 +155,19 @@
   // 设备节点 HTML（离心泵等）
   function buildDeviceHtml(d) {
     return '<div class="device-node">' + svgWithPrefix(SVG_ASSETS[d.svgKey], 'dev' + d.name) + '<div class="dev-name">' + d.name + '</div></div>';
+  }
+
+  // 加药管道：SVG主管图元铺底，中间叠可编辑文字标签（默认“药剂”）；竖版用 CSS 竖管+竖排文字
+  // 调长模式（双击进入）：末端显示拖拽手柄，拖动改变长短；宽度/短边与字体不变
+  function buildChemPipeHtml(d) {
+    var handle = d.resizing
+      ? '<div class="pipe-resize-h" title="拖动改变长短"></div>' : '';
+    if (d.vertical) {
+      return '<div class="chem-pipe vertical"><div class="vpipe-bar"></div>' +
+        '<div class="pipe-label vertical"><span class="pipe-name">' + d.name + '</span></div>' + handle + '</div>';
+    }
+    return '<div class="chem-pipe">' + svgWithPrefix(SVG_ASSETS['加药管道'], 'cp' + (d.name || '').replace(/\s/g, '')) +
+      '<div class="pipe-label"><span class="pipe-name">' + d.name + '</span></div>' + handle + '</div>';
   }
 
   function renderNodeContent(node) {
@@ -167,6 +182,18 @@
       if (!el) return;
       if (d.type === 'pool') el.innerHTML = buildPoolHtml(d);
       else if (d.type === 'device') el.innerHTML = buildDeviceHtml(d);
+      else if (d.type === 'chempipe') {
+        el.innerHTML = buildChemPipeHtml(d);
+        // 加药管道支持调长：渲染后强制按节点模型尺寸同步 DOM，
+        // 否则保存恢复/重渲染时会回退到注册默认尺寸，导致“调长的大小丢失”
+        var sz = node.getSize();
+        fo.setAttribute('width', sz.width);
+        fo.setAttribute('height', sz.height);
+        fo.style.width = sz.width + 'px';
+        fo.style.height = sz.height + 'px';
+        el.style.width = sz.width + 'px';
+        el.style.height = sz.height + 'px';
+      }
     } catch (e) {
       // 单节点渲染失败不中断，交由 ensureRendered 重试
     }
@@ -181,7 +208,7 @@
     renderAllContents();
     var allDone = true;
     graph.getNodes().forEach(function (n) {
-      if (n.shape !== 'pool-node' && n.shape !== 'device-node') return;
+      if (n.shape !== 'pool-node' && n.shape !== 'device-node' && n.shape !== 'chem-pipe-node') return;
       var v = graph.findView(n);
       var fo = v && v.container ? v.container.querySelector('foreignObject') : null;
       var el = fo ? fo.querySelector('div') : null;
@@ -205,8 +232,27 @@
     ],
     attrs: {
       body: { fill: 'rgba(0,0,0,0)', stroke: 'none' },
-      fo: { x: 0, y: 0, width: POOL_W, height: POOL_H, style: { overflow: 'hidden', pointerEvents: 'none' } },
+      // pointerEvents:auto：HTML 内容直接接收鼠标事件（双击改名用原生委托，不依赖 X6 node:dblclick）；
+      // 事件冒泡到画布容器，X6 仍能正常识别节点拖拽/点击
+      fo: { x: 0, y: 0, width: POOL_W, height: POOL_H, style: { overflow: 'hidden', pointerEvents: 'auto' } },
       content: { style: { width: POOL_W + 'px', height: POOL_H + 'px', overflow: 'hidden' } }
+    }
+  });
+
+  X6.Graph.registerNode('chem-pipe-node', {
+    inherit: 'rect',
+    width: PIPE_W, height: PIPE_H,
+    markup: [
+      { tagName: 'rect', selector: 'body' },
+      {
+        tagName: 'foreignObject', selector: 'fo',
+        children: [{ tagName: 'div', ns: 'http://www.w3.org/1999/xhtml', selector: 'content' }]
+      }
+    ],
+    attrs: {
+      body: { fill: 'rgba(0,0,0,0)', stroke: 'none' },
+      fo: { x: 0, y: 0, width: PIPE_W, height: PIPE_H, style: { overflow: 'hidden', pointerEvents: 'auto' } },
+      content: { style: { width: PIPE_W + 'px', height: PIPE_H + 'px', overflow: 'hidden' } }
     }
   });
 
@@ -222,7 +268,7 @@
     ],
     attrs: {
       body: { fill: 'rgba(0,0,0,0)', stroke: 'none' },
-      fo: { x: 0, y: 0, width: DEV_W, height: DEV_H, style: { overflow: 'hidden', pointerEvents: 'none' } },
+      fo: { x: 0, y: 0, width: DEV_W, height: DEV_H, style: { overflow: 'hidden', pointerEvents: 'auto' } },
       content: { style: { width: DEV_W + 'px', height: DEV_H + 'px', overflow: 'hidden' } }
     }
   });
@@ -244,7 +290,15 @@
       allowEdge: false,
       highlight: true
     },
-    interacting: { nodeMovable: true }
+    interacting: {
+      nodeMovable: true,
+      // 管道编辑：边整体不可拖（避免拖中间时起终点跟着位移），
+      // 折点可拖（点中间拐弯处拖动=仅改走向，起终点不变）、双击加/删折点
+      edgeMovable: false,
+      vertexMovable: true,
+      vertexAddable: true,
+      vertexDeletable: true
+    }
   });
 
   // ===================== 5. 工艺流程图节点 =====================
@@ -278,6 +332,21 @@
     });
   }
 
+  // 加药管道节点：横向主管图元 + 可编辑文字标签，整体可拖动，布置在水池上方
+  function addChemPipeNode(name, x, y, vertical) {
+    var w = vertical ? VPIPE_W : PIPE_W, h = vertical ? VPIPE_H : PIPE_H;
+    return graph.addNode({
+      shape: 'chem-pipe-node',
+      x: x, y: y, width: w, height: h,
+      zIndex: 1,
+      attrs: {
+        fo: { x: 0, y: 0, width: w, height: h, style: { overflow: 'hidden', pointerEvents: 'auto' } },
+        content: { style: { width: w + 'px', height: h + 'px', overflow: 'hidden' } }
+      },
+      data: { type: 'chempipe', name: name || '药剂', svgKey: '加药管道', vertical: !!vertical }
+    });
+  }
+
   // 分区框：物化段（蓝）/生化段（红）/调节池区（青绿），不可交互、置于底层
   function hexToRgba(hex, a) {
     var h = hex.replace('#', '');
@@ -307,16 +376,83 @@
     return boxNode;
   }
 
+  // ===== 管道避障路由：生成管道时避开池体/设备，在空白走廊走线 =====
+  // 思路：收集池体/设备包围盒 → 候选水平走廊（池排间隙/上下方/起终点同行）
+  // → 按绕行代价从小到大尝试“竖出→走廊横穿→竖入”三段折线，逐段校验不与任何池体相交
+  function collectObstacleBoxes() {
+    var boxes = [];
+    graph.getNodes().forEach(function (n) {
+      // 加药管道也作为障碍物：水流管道生成时避开它
+      if (n.shape !== 'pool-node' && n.shape !== 'device-node' && n.shape !== 'chem-pipe-node') return;
+      var p = n.position(), s = n.getSize();
+      boxes.push({ x: p.x, y: p.y, w: s.width, h: s.height });
+    });
+    return boxes;
+  }
+  function segClear(a, b, boxes, pad) {
+    var x1 = Math.min(a.x, b.x) - pad, x2 = Math.max(a.x, b.x) + pad;
+    var y1 = Math.min(a.y, b.y) - pad, y2 = Math.max(a.y, b.y) + pad;
+    for (var i = 0; i < boxes.length; i++) {
+      var bx = boxes[i];
+      if (!(x2 < bx.x || x1 > bx.x + bx.w || y2 < bx.y || y1 > bx.y + bx.h)) return false;
+    }
+    return true;
+  }
+  function routeAvoiding(srcCell, tgtCell) {
+    var sp = srcCell.getPosition(), ss = srcCell.getSize();
+    var tp = tgtCell.getPosition(), ts = tgtCell.getSize();
+    var sx = Math.round(sp.x + ss.width / 2), sy = Math.round(sp.y + ss.height / 2);
+    var tx = Math.round(tp.x + ts.width / 2), ty = Math.round(tp.y + ts.height / 2);
+    // 起终点自身不算障碍（竖出/竖入段允许从自身池体后穿过，管道在池体下层不可见）
+    var boxes = collectObstacleBoxes().filter(function (b) {
+      return !(b.x === sp.x && b.y === sp.y && b.w === ss.width && b.h === ss.height) &&
+             !(b.x === tp.x && b.y === tp.y && b.w === ts.width && b.h === ts.height);
+    });
+    // 直角短路径（同行/同列）优先：一个折点即可
+    var bend = { x: tx, y: sy };
+    if (segClear({x:sx,y:sy}, bend, boxes, 8) && segClear(bend, {x:tx,y:ty}, boxes, 8)) {
+      if (Math.abs(sx - tx) < 1 || Math.abs(sy - ty) < 1) return null; // 已共线
+      return [bend];
+    }
+    // 候选走廊：起终点同行 + 池排间隙/上下方空白带中点，按绕行代价排序
+    var marks = [];
+    boxes.forEach(function (b) { marks.push(b.y - 14, b.y + b.h + 14); });
+    marks.sort(function (a, b) { return a - b; });
+    var ys = [sy, ty, marks[0] - 40, marks[marks.length - 1] + 40];
+    for (var i = 0; i < marks.length - 1; i++) {
+      if (marks[i + 1] - marks[i] > 40) ys.push((marks[i] + marks[i + 1]) / 2);
+    }
+    ys.sort(function (a, b) {
+      return (Math.abs(a - sy) + Math.abs(a - ty)) - (Math.abs(b - sy) + Math.abs(b - ty));
+    });
+    for (var j = 0; j < ys.length; j++) {
+      var c = Math.round(ys[j]);
+      var v1 = { x: sx, y: c }, v2 = { x: tx, y: c };
+      if (segClear({x:sx,y:sy}, v1, boxes, 8) && segClear(v1, v2, boxes, 8) && segClear(v2, {x:tx,y:ty}, boxes, 8)) {
+        var vs = [];
+        if (c !== sy) vs.push(v1);
+        if (c !== ty) vs.push(v2);
+        return vs.length ? vs : null;
+      }
+    }
+    return null; // 找不到空白走廊，交由 orth 直连兑底
+  }
+
   // 动态水流线：flow-line 流动动画（流向由流动管道表达，不加三角箭头）
   // 注意：X6 默认边自带 targetMarker(marker-v1)，必须显式 targetMarker:null 禁用
   function addFlowEdge(sourceId, targetId, sAnchor, tAnchor, vertices) {
     var opts = {
       source: { cell: sourceId, anchor: sAnchor || 'right' },
       target: { cell: targetId, anchor: tAnchor || 'left' },
-      router: { name: 'normal' }, // 同行/跨段均直线，跨段用 vertices 折线（参考图走向）
+      // 正交路由：所有段只允许横线/竖线，禁止斜线和弧线。
+      // 避障由调用方预计算空白走廊 vertices（routeAvoiding），本函数只负责正交连线
+      router: { name: 'orth' },
       connector: { name: 'normal' },
       zIndex: 0,
       attrs: {
+        // 命中层：透明宽 stroke，解决流动虚线 dash 间隙点击穿透的问题
+        // （visiblePainted 默认规则下 dash 间隙不可命中，重叠时按下会落到下层管道）
+        wrap: { stroke: 'transparent', strokeWidth: 14, strokeLinecap: 'round' },
         line: {
           stroke: '#00f0ff', strokeWidth: 2, strokeOpacity: 0.7,
           class: 'flow-line',
@@ -326,13 +462,13 @@
     };
     if (vertices) opts.vertices = vertices;
     var edge = graph.addEdge(opts);
+    // wrap 命中层直挂拖动监听（X6 事件委托之外的双保险）
+    setTimeout(function () { attachEdgeDomDrag(edge); }, 0);
     return edge;
   }
 
-  // 三区布局：调节池区(青绿) / 物化段(蓝) / 生化段(红)
+  // 分区框：仅保留生化段（2026-09-08 用户要求删除调节池区、物化段两框及其标题）
   var SECTIONS = [
-    { x: 20, y: 70, w: 420, h: 330, title: '调节池区', color: COLOR_ADJ },
-    { x: 470, y: 70, w: 900, h: 330, title: '物化段', color: COLOR_PHYS },
     { x: 470, y: 430, w: 1140, h: 330, title: '生化段', color: COLOR_BIO }
   ];
 
@@ -385,10 +521,12 @@
     if (mode === 'pool') {
       items = ['调节池', '反应池', '沉淀池', '厌氧池', '缺氧池', '好氧池', '二沉池'];
     } else {
-      items = ['水泵', '风机', '搅拌机', '曝气盘', '刮泥机'];
+      items = ['水泵', '风机', '搅拌机', '曝气盘', '刮泥机', '加药管道', '加药管道竖版'];
     }
     modalGrid.innerHTML = items.map(function (k) {
-      return '<div class="modal-item" data-svg="' + k + '"><div class="mi-svg">' + svgWithPrefix(SVG_ASSETS[k], 'mi') + '</div><div class="mi-name">' + k + '</div></div>';
+      // 竖版加药管道无SVG图元，用CSS迷你预览
+      var preview = SVG_ASSETS[k] ? svgWithPrefix(SVG_ASSETS[k], 'mi') : '<div class="mi-vpipe"></div>';
+      return '<div class="modal-item" data-svg="' + k + '"><div class="mi-svg">' + preview + '</div><div class="mi-name">' + k + '</div></div>';
     }).join('');
     modalMask.classList.add('show');
   }
@@ -404,6 +542,7 @@
     else if (act === 'del') delSelected();
     else if (act === 'reset') resetLayout();
     else if (act === 'export') exportJson();
+    else if (act === 'save') saveConfig();
   });
 
   // ===== 连线模式：自定义添加流态管道（点起点 → 点终点，方向即流向） =====
@@ -425,7 +564,10 @@
   function clearConnectSource() {
     if (connectSourceId) {
       var n = graph.getCellById(connectSourceId);
-      if (n) n.attr('body/stroke', null);
+      // 高亮用容器class而非 node.attr：attr 变更会重建 foreignObject DOM，
+      // 导致注入的池体内容（SVG/名称/状态框）被清空，节点看起来“消失”
+      var v = n && graph.findView(n);
+      if (v && v.container) v.container.classList.remove('connect-source');
     }
     connectSourceId = null;
   }
@@ -440,14 +582,20 @@
   function handleConnectClick(node) {
     if (!connectSourceId) {
       connectSourceId = node.id;
-      node.attr('body/stroke', '#ffcf5c'); // 高亮起点
+      // 高亮起点：容器class（不用 node.attr，避免重建 DOM 清空池体内容）
+      var sv = graph.findView(node);
+      if (sv && sv.container) sv.container.classList.add('connect-source');
       toast('起点：' + getNodeName(node.id) + '，再点击终点节点');
     } else if (connectSourceId === node.id) {
       clearConnectSource();
       toast('已取消起点选择');
     } else {
       var sourceId = connectSourceId;
-      addFlowEdge(sourceId, node.id, 'center', 'center');
+      // avoidObstacle=true：新管道用 manhattan 绕开水池，在空白处走线
+      // 避障：预计算空白走廊折线，避开池体/设备，在空白处走线
+      var sCell = graph.getCellById(sourceId), tCell = graph.getCellById(node.id);
+      var avoidVerts = (sCell && tCell) ? routeAvoiding(sCell, tCell) : null;
+      addFlowEdge(sourceId, node.id, 'center', 'center', avoidVerts);
       clearConnectSource();
       toast('已添加管道：' + getNodeName(sourceId) + ' → ' + getNodeName(node.id));
     }
@@ -466,7 +614,7 @@
   });
 
   function delSelected() {
-    if (!selectedCellId) { toast('请先点击选中要删除的节点'); return; }
+    if (!selectedCellId) { toast('请先点击选中要删除的节点或管道'); return; }
     var cell = graph.getCellById(selectedCellId);
     if (!cell) { clearSelection(); return; }
     var name = getNodeName(selectedCellId);
@@ -477,10 +625,59 @@
 
   function resetLayout() {
     clearSelection();
+    try { localStorage.removeItem(SAVE_KEY); } catch (err) {}
     graph.clearCells();
     buildFlow();
     ensureRendered(6);
-    toast('已重置工艺流程图布局');
+    toast('已恢复默认布局（已清除保存的配置）');
+  }
+
+  // ===== 保存/恢复配置：localStorage 持久化，下次打开自动还原 =====
+  var SAVE_KEY = 'x6_flow_config_v1';
+  function saveConfig() {
+    try {
+      localStorage.setItem(SAVE_KEY, JSON.stringify(graph.toJSON()));
+      toast('已保存当前配置（下次打开自动恢复）');
+    } catch (err) {
+      toast('保存失败：' + (err && err.message ? err.message : '存储空间不足'));
+    }
+  }
+  function loadSavedConfig() {
+    var raw = null;
+    try { raw = localStorage.getItem(SAVE_KEY); } catch (err) {}
+    if (!raw) return false;
+    try {
+      graph.fromJSON(JSON.parse(raw));
+      // 兼容旧存档：给历史管道补上 wrap 命中层（dash 间隙穿透修复）
+      graph.getEdges().forEach(function (e) {
+        e.attr('wrap/stroke', 'transparent');
+        e.attr('wrap/strokeWidth', 14);
+        e.attr('wrap/strokeLinecap', 'round');
+        setTimeout(function () { attachEdgeDomDrag(e); }, 0);
+      });
+      // 重建分区框引用，并重新注入池体/设备 HTML 内容
+      // 旧存档中的调节池区/物化段框（已废弃）自动清除，只保留生化段框
+      sectionBoxNodes = [];
+      var obsoleteBoxes = [];
+      graph.getNodes().forEach(function (n) {
+        if (n.shape === 'rect') {
+          if (n.attr('label/text') === SECTIONS[0].title) {
+            sectionBoxNodes.push(n);
+            var p = n.position(), sz = n.getSize();
+            SECTIONS[0].x = p.x; SECTIONS[0].y = p.y;
+            SECTIONS[0].w = sz.width; SECTIONS[0].h = sz.height;
+          } else {
+            obsoleteBoxes.push(n);
+          }
+        }
+        renderNodeContent(n);
+      });
+      obsoleteBoxes.forEach(function (n) { graph.removeNode(n); });
+      setTimeout(autoFitAllSections, 120);
+      return true;
+    } catch (err) {
+      return false; // 配置损坏则回退默认布局
+    }
   }
 
   function exportJson() {
@@ -494,12 +691,11 @@
     toast('已导出布局 JSON');
   }
 
-  // 图元 → 分区框映射（用户要求：按类型自动放进对应分区框）
-  // 0=调节池区, 1=物化段, 2=生化段
+  // 图元 → 分区框映射：仅生化类池自动进生化段框
+  // （调节池区/物化段框已删除，调节池/反应池/沉淀池新增时放在自由位置）
+  // 0=生化段
   var SECTION_MAP = {
-    '调节池': 0,
-    '反应池': 1, '沉淀池': 1,
-    '厌氧池': 2, '缺氧池': 2, '好氧池': 2, '二沉池': 2
+    '厌氧池': 0, '缺氧池': 0, '好氧池': 0, '二沉池': 0
   };
 
   // 在分区框内第一行末尾找空位（框不够时由 expandSection 自动扩大）
@@ -549,15 +745,37 @@
       if (sectionIdx !== undefined) expandSection(sectionIdx, pos); // 自动扩大分区框
       setTimeout(function () { renderNodeContent(n); }, 150);
       toast('已添加池体：' + pool.name + (sectionIdx !== undefined ? (' → ' + SECTIONS[sectionIdx].title) : ''));
+    } else if (svgKey === '加药管道' || svgKey === '加药管道竖版') {
+      var isV = svgKey === '加药管道竖版';
+      var bbox = getGraphBBox();
+      // 默认布置在水池上方空白处
+      var w0 = isV ? VPIPE_W : PIPE_W, h0 = isV ? VPIPE_H : PIPE_H;
+      var pn = addChemPipeNode('药剂', Math.max(40, bbox.minX + 60), Math.max(74, bbox.minY - h0 + 30), isV);
+      setTimeout(function () { renderNodeContent(pn); }, 150);
+      toast('已添加加药管道' + (isV ? '（竖版）' : '') + '，单击“药剂”可编辑名称，按住可拖动');
     } else {
       var dn = addDeviceNode(svgKey, svgKey, pos.x, pos.y);
       setTimeout(function () { renderNodeContent(dn); }, 150);
       toast('已添加设备：' + svgKey);
     }
   }
+  // 手动计算画布内池体/设备的包围盒（X6 2.x 无 graph.getBBox）
+  function getGraphBBox() {
+    var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    graph.getNodes().forEach(function (n) {
+      if (n.shape !== 'pool-node' && n.shape !== 'device-node') return;
+      var p = n.position(), s = n.getSize();
+      if (p.x < minX) minX = p.x;
+      if (p.y < minY) minY = p.y;
+      if (p.x + s.width > maxX) maxX = p.x + s.width;
+      if (p.y + s.height > maxY) maxY = p.y + s.height;
+    });
+    if (minX === Infinity) return { minX: 40, minY: 74, maxX: 400, maxY: 400 };
+    return { minX: minX, minY: minY, maxX: maxX, maxY: maxY };
+  }
   function freePos() {
-    var bbox = graph.getBBox();
-    return { x: Math.max(40, bbox.x + 40), y: Math.max(74, bbox.y + 40) };
+    var bbox = getGraphBBox();
+    return { x: Math.max(40, bbox.minX + 40), y: Math.max(74, bbox.minY + 40) };
   }
 
   // ===================== 7. 事件绑定 =====================
@@ -601,10 +819,15 @@
   graph.on('node:added', function () { setTimeout(autoFitAllSections, 60); });
   graph.on('node:removed', function () { setTimeout(autoFitAllSections, 60); });
 
-  // 连线编辑抓手：hover 边时显示可拖拽端点（起终点可编辑），平时隐藏不显示箭头
+  // 管道编辑：hover 显示两端可拖拽箭头（调起终点）+ 折点抓手 + × 删除按钮
   graph.on('edge:mouseenter', function (e) {
     if (e.edge && e.edge.setTools) {
-      e.edge.setTools([{ name: 'source-arrowhead' }, { name: 'target-arrowhead' }]);
+      e.edge.setTools([
+        { name: 'vertices' },
+        { name: 'source-arrowhead' },
+        { name: 'target-arrowhead' },
+        { name: 'button-remove', args: { distance: 0.5 } }
+      ]);
     }
   });
   graph.on('edge:mouseleave', function (e) {
@@ -647,14 +870,284 @@
       handleConnectClick(e.node);
       return;
     }
+    if (editingNode) return; // 编辑中不触发抽屉
     var d = e.node.getData();
     if (!d) return;
     selectNode(e.node); // 自维护选中（供 Delete 删除）
     if (d.type === 'pool') {
-      openDrawer(d.poolId, d.poolName);
+      // 点击名称文字 → 直接进入改名编辑（比双击可靠，双击前必先触发单击导致浮层抢焦点）
+      var t = e.e && e.e.target;
+      if (t && t.closest && t.closest('.pool-name')) {
+        if (pendingDrawerTimer) { clearTimeout(pendingDrawerTimer); pendingDrawerTimer = null; }
+        startEditName(e.node);
+        return;
+      }
+      // 点击名称以外区域 → 延迟开抽屉（给双击留取消窗口）
+      if (pendingDrawerTimer) clearTimeout(pendingDrawerTimer);
+      pendingDrawerTimer = setTimeout(function () {
+        pendingDrawerTimer = null;
+        openDrawer(d.poolId, d.poolName);
+      }, 260);
+    } else if (d.type === 'chempipe') {
+      selectNode(e.node); // 供 Delete 删除；整体拖动为 X6 默认行为
+      var t2 = e.e && e.e.target;
+      if (t2 && t2.closest && t2.closest('.pipe-name')) startEditPipeName(e.node);
+      else toast('加药管道：拖动可整体移动，单击“药剂”可编辑文字');
     } else {
       toast('设备节点：' + d.name + '（暂无历史数据曲线）');
     }
+  });
+
+  // ===== 池体名称就地编辑：双击名称 → input+datalist（可自由输入/预设下拉），Enter/失焦保存，Esc取消 =====
+  var editingNode = null;
+  var pendingDrawerTimer = null;
+  function ensureDatalist() {
+    var dl = document.getElementById('poolNamePresets');
+    if (!dl) {
+      dl = document.createElement('datalist');
+      dl.id = 'poolNamePresets';
+      document.body.appendChild(dl);
+    }
+    dl.innerHTML = (MOCK.POOL_NAME_PRESETS || []).map(function (n) {
+      return '<option value="' + n + '">';
+    }).join('');
+  }
+  function startEditName(node) {
+    if (connectMode || editingNode) return;
+    var d = node.getData();
+    if (!d || d.type !== 'pool') return;
+    var view = graph.findView(node);
+    var nameEl = view && view.container && view.container.querySelector('.pool-name');
+    if (!nameEl) return;
+    // 取消双击前单击触发的抽屉定时器（抽屉会盖住画布并抢走输入框焦点）
+    if (pendingDrawerTimer) { clearTimeout(pendingDrawerTimer); pendingDrawerTimer = null; }
+    ensureDatalist();
+    editingNode = node;
+    var input = document.createElement('input');
+    input.className = 'pool-name-input';
+    input.setAttribute('list', 'poolNamePresets');
+    input.value = d.poolName || '';
+    nameEl.innerHTML = '';
+    nameEl.appendChild(input);
+    input.focus(); input.select();
+    // 阻断画布快捷键/拖拽冲突
+    ['pointerdown', 'mousedown', 'dblclick', 'keydown'].forEach(function (ev) {
+      input.addEventListener(ev, function (e) { e.stopPropagation(); });
+    });
+    function finish(save) {
+      if (!editingNode) return;
+      var val = input.value.trim();
+      if (save && val) {
+        d.poolName = val;
+        node.setData(d);
+      }
+      editingNode = null;
+      renderNodeContent(node); // 恢复正常显示（含状态框）
+      if (save && val) toast('已重命名：' + val);
+    }
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') finish(true);
+      else if (e.key === 'Escape') finish(false);
+    });
+    input.addEventListener('blur', function () { finish(true); });
+  }
+  // 加药管道文字编辑：单击“药剂”标签即可改文字（自由输入，无预设清单）
+  // 用页面级浮动输入框（position:fixed），不在 foreignObject 内编辑：
+  // 竖版管道节点只有 42px 宽，竖排容器里的 input 会被 overflow:hidden 裁剪到看不见，焦点也可能异常
+  function startEditPipeName(node) {
+    if (connectMode || editingNode) return;
+    var d = node.getData();
+    if (!d || d.type !== 'chempipe') return;
+    var view = graph.findView(node);
+    var nameEl = view && view.container && view.container.querySelector('.pipe-name');
+    if (!nameEl) return;
+    var rect = nameEl.getBoundingClientRect();
+    editingNode = node;
+    var input = document.createElement('input');
+    input.className = 'pipe-name-float-input';
+    input.value = d.name || '';
+    var iw = Math.max(120, Math.min(220, rect.width + 60));
+    input.style.left = Math.round(rect.left + rect.width / 2 - iw / 2) + 'px';
+    input.style.top = Math.round(rect.top + rect.height / 2 - 14) + 'px';
+    input.style.width = iw + 'px';
+    document.body.appendChild(input);
+    input.focus(); input.select();
+    ['pointerdown', 'mousedown', 'dblclick', 'keydown'].forEach(function (ev) {
+      input.addEventListener(ev, function (e) { e.stopPropagation(); });
+    });
+    function finish(save) {
+      if (!editingNode) return;
+      var val = input.value.trim();
+      editingNode = null;
+      if (input.parentNode) input.parentNode.removeChild(input);
+      if (save && val) {
+        d.name = val;
+        node.setData(d);
+      }
+      renderNodeContent(node);
+      if (save && val) toast('药剂名称已更新：' + val);
+    }
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') finish(true);
+      else if (e.key === 'Escape') finish(false);
+    });
+    input.addEventListener('blur', function () { finish(true); });
+  }
+
+  // ===== 加药管道调长：双击管体（非文字）进入/退出调长模式，拖末端手柄改长短 =====
+  // 宽度/短边不变，字体不变，只有长度方向变化（竖版改高、横版改宽）
+  var resizingNode = null;
+  function exitPipeResize() {
+    if (!resizingNode) return;
+    var d = resizingNode.getData();
+    d.resizing = false;
+    resizingNode.setData(d);
+    renderNodeContent(resizingNode);
+    resizingNode = null;
+  }
+  function togglePipeResize(node) {
+    var d = node.getData();
+    if (!d || d.type !== 'chempipe') return;
+    if (editingNode) return; // 文字编辑中不切换
+    if (resizingNode && resizingNode !== node) exitPipeResize();
+    if (d.resizing) { exitPipeResize(); return; }
+    d.resizing = true;
+    node.setData(d);
+    resizingNode = node;
+    renderNodeContent(node);
+    toast(d.vertical
+      ? '调长模式：拖动下方圆形手柄改变长短（宽度不变），双击管体或 Esc 退出'
+      : '调长模式：拖动右侧圆形手柄改变长短（高度不变），双击管体或 Esc 退出');
+  }
+  // 直接改 DOM 尺寸（不走 node.attr，避免重建 DOM 清空注入内容）
+  function syncChemPipeDomSize(node, w, h) {
+    var v = graph.findView(node);
+    if (!v || !v.container) return;
+    var fo = v.container.querySelector('foreignObject');
+    var box = fo ? fo.querySelector('div') : null;
+    if (fo) {
+      fo.setAttribute('width', w); fo.setAttribute('height', h);
+      fo.style.width = w + 'px'; fo.style.height = h + 'px';
+    }
+    if (box) { box.style.width = w + 'px'; box.style.height = h + 'px'; }
+  }
+  // 手柄拖拽：capture 阶段拦截 mousedown/click，避免触发节点整体拖动与选中
+  document.getElementById('graphContainer').addEventListener('mousedown', function (e) {
+    if (!resizingNode) return;
+    var h = e.target && e.target.closest ? e.target.closest('.pipe-resize-h') : null;
+    if (!h) return;
+    e.stopPropagation(); e.preventDefault();
+    var d = resizingNode.getData();
+    var start = resizingNode.getSize();
+    var sx = e.clientX, sy = e.clientY;
+    var MIN = d.vertical ? 90 : 140, MAX = d.vertical ? 520 : 900;
+    function onMove(ev) {
+      var w = start.width, hgt = start.height;
+      if (d.vertical) hgt = Math.min(MAX, Math.max(MIN, start.height + (ev.clientY - sy)));
+      else w = Math.min(MAX, Math.max(MIN, start.width + (ev.clientX - sx)));
+      resizingNode.resize(w, hgt);          // X6 模型尺寸（选框/碰撞盒跟随）
+      syncChemPipeDomSize(resizingNode, w, hgt); // DOM 填充同步
+    }
+    function onUp() {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      toast('长度已调整：' + (d.vertical ? '高 ' : '宽 ') + (d.vertical ? resizingNode.getSize().height : resizingNode.getSize().width) + 'px，双击管体退出调长模式');
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  }, true);
+  document.getElementById('graphContainer').addEventListener('click', function (e) {
+    if (!resizingNode) return;
+    if (e.target && e.target.closest && e.target.closest('.pipe-resize-h')) {
+      e.stopPropagation(); e.preventDefault();
+    }
+  }, true);
+
+  // 双击改名/调长：用原生 DOM 委托而非 X6 node:dblclick——
+  // X6 在 foreignObject 内容上的 dblclick 判定不可靠（双击多次才偶发触发）
+  document.getElementById('graphContainer').addEventListener('dblclick', function (e) {
+    var pipeEl = e.target && e.target.closest ? e.target.closest('.chem-pipe') : null;
+    if (pipeEl) {
+      // 双击加药管道：点在文字上忽略（单击已可编辑文字），点在管体上切换调长模式
+      if (e.target.closest && e.target.closest('.pipe-name')) return;
+      var host2 = pipeEl.closest('.x6-node');
+      if (!host2) return;
+      var node2 = null;
+      graph.getNodes().forEach(function (n) {
+        var v = graph.findView(n);
+        if (v && v.container === host2) node2 = n;
+      });
+      if (!node2) return;
+      e.preventDefault();
+      e.stopPropagation();
+      togglePipeResize(node2);
+      return;
+    }
+    var nameEl = e.target && e.target.closest ? e.target.closest('.pool-name') : null;
+    if (!nameEl) return;
+    var host = nameEl.closest('.x6-node');
+    if (!host) return;
+    var node = null;
+    graph.getNodes().forEach(function (n) {
+      var v = graph.findView(n);
+      if (v && v.container === host) node = n;
+    });
+    if (!node) return;
+    e.preventDefault();
+    e.stopPropagation();
+    startEditName(node);
+  });
+
+  // ===== 管道选中 + 整体拖动（仿 WPS 流程图：按住管道拖动，折点跟随平移） =====
+  graph.on('edge:click', function (e) {
+    selectNode(e.edge); // 复用自维护选中，Delete 键即可删管道
+    toast('已选中管道，Delete 删除；两端箭头可拖拽改起终点，按住线体拖动可平移');
+  });
+
+  var edgeDrag = null; // { edge, startX, startY, base }
+  function startEdgeDrag(edge, clientX, clientY) {
+    if (connectMode || edgeDrag || !edge) return;
+    // 置顶被按住的管道：重叠时拖动的始终是当前操作的那条
+    if (edge.toFront) edge.toFront();
+    var vs = (edge.getVertices() || []).map(function (p) { return { x: p.x, y: p.y }; });
+    if (!vs.length) {
+      // 直线管道：取中点生成折点，拖动即折弯，可归位
+      var sp = edge.getSourcePoint(), tp = edge.getTargetPoint();
+      vs = [{ x: (sp.x + tp.x) / 2, y: (sp.y + tp.y) / 2 }];
+      edge.setVertices(vs);
+    }
+    edgeDrag = { edge: edge, startX: clientX, startY: clientY, base: vs };
+  }
+  // X6 事件委托通道（保留）
+  graph.on('edge:mousedown', function (e) {
+    startEdgeDrag(e.edge, e.e.clientX, e.e.clientY);
+  });
+  // DOM 直挂通道：wrap 命中层 mousedown 直接启动拖动，
+  // 不依赖 X6 事件委托（管道重叠/合成事件下更可靠）
+  function attachEdgeDomDrag(edge, retry) {
+    var v = graph.findView(edge);
+    // view 异步创建，未就绪时重试（最多 5 次）
+    if (!v || !v.container) {
+      if ((retry || 0) < 5) setTimeout(function () { attachEdgeDomDrag(edge, (retry || 0) + 1); }, 200);
+      return;
+    }
+    var wrap = v.container.querySelectorAll('path')[0];
+    if (!wrap || wrap.__dragBound) return;
+    wrap.__dragBound = true;
+    wrap.addEventListener('mousedown', function (e) {
+      if (e.button !== 0) return;
+      startEdgeDrag(edge, e.clientX, e.clientY);
+    });
+  }
+  document.addEventListener('mousemove', function (e) {
+    if (!edgeDrag) return;
+    var dx = e.clientX - edgeDrag.startX, dy = e.clientY - edgeDrag.startY;
+    edgeDrag.edge.setVertices(edgeDrag.base.map(function (p) {
+      return { x: Math.round(p.x + dx), y: Math.round(p.y + dy) };
+    }));
+  });
+  document.addEventListener('mouseup', function () {
+    if (edgeDrag) edgeDrag = null;
   });
 
   // 悬停提示
@@ -752,6 +1245,7 @@
   drawerMask.addEventListener('click', closeDrawer);
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
+      if (resizingNode) { exitPipeResize(); return; }
       if (connectMode) { toggleConnectMode(); return; }
       closeDrawer();
     }
@@ -942,7 +1436,9 @@
   }
 
   // ===================== 12. 初始化 =====================
-  buildFlow();
+  // 启动：有保存过的配置则恢复，否则构建默认流程
+  var restored = loadSavedConfig();
+  if (!restored) buildFlow();
   ensureRendered(14); // 多次重试渲染节点内容（覆盖更长加载时间）
   renderNavData();
   renderBottom();

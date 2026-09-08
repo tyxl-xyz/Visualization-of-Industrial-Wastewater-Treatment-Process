@@ -470,11 +470,100 @@ body {
   display: flex; flex-direction: column; align-items: center; gap: 3px;
 }
 .pool-title {
+  pointer-events: auto; /* foreignObject 默认 none，开启后名称可单独点击进编辑 */
   font-size: 13px; font-weight: 600; letter-spacing: 1px;
   color: #e6fbff;
   text-shadow: 0 0 8px rgba(0,240,255,.25);
   display: inline-flex; align-items: center; gap: 5px;
 }
+.pool-title .pool-name { cursor: text; pointer-events: auto; }
+.pool-title .pool-name:hover { color: #ffcf5c; text-shadow: 0 0 8px rgba(255,207,92,.45); }
+/* 保存配置按钮高亮 */
+.tool-btn.primary { color: #06222e; background: linear-gradient(135deg, #2fe3c8, #1fc4e8); border-color: transparent; font-weight: 700; }
+.tool-btn.primary:hover { filter: brightness(1.1); }
+/* 管道选中态：金色高亮，便于确认删除目标 */
+.x6-edge.my-selected path.flow-line { stroke: #ffcf5c !important; stroke-width: 3 !important; stroke-opacity: 1 !important; }
+
+/* 加药管道节点：SVG主管铺底，中间叠可编辑文字标签 */
+.chem-pipe {
+  position: relative; width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+}
+.chem-pipe > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* 竖版加药管道：窄竖管 + 竖排文字（大小仿红框参考图） */
+.chem-pipe.vertical { flex-direction: column; }
+.vpipe-bar {
+  position: absolute; left: 50%; top: 4%; transform: translateX(-50%);
+  width: 12px; height: 92%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, rgba(0,120,190,.35), rgba(90,220,255,.9) 40%, rgba(0,150,220,.5));
+  box-shadow: 0 0 10px rgba(0,190,255,.45);
+}
+.vpipe-bar::before, .vpipe-bar::after {
+  content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+  width: 8px; height: 14px; border-radius: 0 0 4px 4px;
+  background: linear-gradient(180deg, rgba(140,235,255,.95), rgba(0,150,220,.4));
+}
+.vpipe-bar::before { bottom: -12px; }
+.vpipe-bar::after { top: -10px; transform: translateX(-50%) rotate(180deg); }
+.pipe-label.vertical {
+  writing-mode: vertical-rl;
+  padding: 8px 2px;
+  letter-spacing: 4px;
+}
+/* 加药管道调长手柄：双击管体进入调长模式后显示在末端 */
+.pipe-resize-h {
+  position: absolute; z-index: 3;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: rgba(6,30,40,.92);
+  border: 2px solid #ffcf5c;
+  box-shadow: 0 0 8px rgba(255,207,92,.6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; line-height: 1; color: #ffcf5c; font-weight: 700;
+  pointer-events: auto;
+}
+.pipe-resize-h::after { content: '\21D5'; }
+.chem-pipe.vertical .pipe-resize-h { left: 50%; bottom: -7px; transform: translateX(-50%); cursor: ns-resize; }
+.chem-pipe:not(.vertical) .pipe-resize-h { right: -7px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
+.chem-pipe:not(.vertical) .pipe-resize-h::after { content: '\21D4'; }
+/* 设备弹层里竖版管道的迷你预览 */
+.mi-vpipe {
+  width: 10px; height: 56px; border-radius: 5px;
+  background: linear-gradient(90deg, rgba(0,120,190,.35), rgba(90,220,255,.9) 40%, rgba(0,150,220,.5));
+  box-shadow: 0 0 8px rgba(0,190,255,.45);
+}
+.pipe-label {
+  position: relative; z-index: 2;
+  padding: 1px 10px;
+  background: rgba(4, 20, 30, .88);
+  border: 1px solid rgba(127,227,255,.65);
+  border-radius: 3px;
+  font-size: 12px; font-weight: 600; letter-spacing: 2px;
+  color: #bfefff; text-shadow: 0 0 6px rgba(0,220,255,.4);
+  cursor: text;
+  box-shadow: 0 0 8px rgba(0,180,255,.25);
+}
+/* 加药管道文字编辑：页面级浮动输入框（不进 foreignObject，避免竖管裁剪） */
+.pipe-name-float-input {
+  position: fixed; z-index: 9999; height: 28px;
+  font: 600 13px/1 inherit; font-family: inherit; letter-spacing: 2px;
+  color: #ffcf5c; text-align: center;
+  background: rgba(4,12,20,.92);
+  border: 1px solid rgba(255,207,92,.75);
+  border-radius: 3px; outline: none;
+  padding: 4px 8px;
+  box-shadow: 0 0 12px rgba(255,207,92,.35), 0 4px 16px rgba(0,0,0,.5);
+}
+.pool-name-input {
+  pointer-events: auto;
+  width: 110px; max-width: 60%;
+  font: inherit; font-size: 13px; font-weight: 600; color: #ffcf5c;
+  background: rgba(4,12,20,.85);
+  border: 1px solid rgba(255,207,92,.7);
+  border-radius: 3px; outline: none;
+  padding: 1px 4px;
+}
+.pool-name-input:focus { border-color: #ffcf5c; box-shadow: 0 0 8px rgba(255,207,92,.4); }
 /* 工艺状态展示框：方形，正常=蓝 / 异常=黄 / 预警=红 */
 .pool-status {
   display: inline-flex; align-items: center; justify-content: center;
@@ -488,6 +577,8 @@ body {
   text-shadow: none;
   flex-shrink: 0;
 }
+/* 连线模式起点高亮：容器class，不用 node.attr（避免重建 DOM 清空池体内容） */
+.x6-node.connect-source .pool-node { border-color: #ffcf5c; box-shadow: 0 0 0 2px #ffcf5c, 0 0 16px rgba(255,207,92,.5); }
 .pool-status.st-normal   { color: #3fa9ff; box-shadow: 0 0 6px rgba(0,130,255,.4), inset 0 0 5px rgba(0,130,255,.18); }
 .pool-status.st-abnormal { color: #ffd24d; box-shadow: 0 0 6px rgba(255,196,0,.45), inset 0 0 5px rgba(255,196,0,.2); }
 .pool-status.st-warning  { color: #ff5d6b; box-shadow: 0 0 6px rgba(255,60,90,.45), inset 0 0 5px rgba(255,60,90,.2); }

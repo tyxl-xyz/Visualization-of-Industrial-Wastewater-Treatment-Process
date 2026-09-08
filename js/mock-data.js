@@ -205,6 +205,12 @@
     OUTLET: OUTLET,
     OUTLET_STANDARD: OUTLET_STANDARD,
     genSeries: genSeries,
-    timeStr: timeStr
+    timeStr: timeStr,
+    // 池体名称预设清单（双击池体名称编辑时下拉可选，也支持自由输入）
+    POOL_NAME_PRESETS: [
+      '调节池', '反应池1', '反应池2', '物化沉淀池1', '物化沉淀池2',
+      '厌氧池', '缺氧池', '好氧池', '生化沉淀池', '二沉池',
+      '中间水池', '清水池', '污泥池', '事故池', '配水井', '排放池'
+    ]
   };
 })(typeof window !== 'undefined' ? window : this);
