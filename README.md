@@ -3,6 +3,10 @@
 > 面向工业污水处理场景的**工艺流程可视化 + 可编辑**大屏交互 Demo。
 > 基于 AntV X6 图编辑引擎，支持工艺池体拖拽编排、动态水流线、加药管道图元、管道编辑、状态标识、点击查看双数据源历史曲线、配置保存与导出。
 
+**在线体验**：<https://tyxl-xyz.github.io/Visualization-of-Industrial-Wastewater-Treatment-Process/>
+
+> 纯静态页面，X6 / ECharts 已内置在仓库中，无需任何 CDN 依赖，可直接打开。
+
 ![工艺流程编辑页预览](preview/预览-工艺流程编辑页-v18.png)
 
 ## 功能特性
