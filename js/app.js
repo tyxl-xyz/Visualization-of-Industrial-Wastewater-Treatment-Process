@@ -5,6 +5,7 @@
 
   var POOL_W = 230, POOL_H = 225; // 池体节点尺寸（放大，SVG 占主体）
   var DEV_W = 100, DEV_H = 100;   // 设备节点尺寸
+  var MONITOR_W = 100, MONITOR_H = 170; // 监测设备（H62B/H65C）瘦高尺寸，约半池体积
   var PIPE_W = 320, PIPE_H = 64;  // 加药管道（横版）节点尺寸
   var VPIPE_W = 42, VPIPE_H = 190; // 加药管道（竖版）节点尺寸
 
@@ -181,7 +182,17 @@
       var el = fo.querySelector('div');
       if (!el) return;
       if (d.type === 'pool') el.innerHTML = buildPoolHtml(d);
-      else if (d.type === 'device') el.innerHTML = buildDeviceHtml(d);
+      else if (d.type === 'device') {
+        el.innerHTML = buildDeviceHtml(d);
+        // 监测设备（H62B/H65C）为瘦高尺寸：渲染后按节点模型尺寸同步 DOM，避免回退默认
+        var dsz = node.getSize();
+        fo.setAttribute('width', dsz.width);
+        fo.setAttribute('height', dsz.height);
+        fo.style.width = dsz.width + 'px';
+        fo.style.height = dsz.height + 'px';
+        el.style.width = dsz.width + 'px';
+        el.style.height = dsz.height + 'px';
+      }
       else if (d.type === 'chempipe') {
         el.innerHTML = buildChemPipeHtml(d);
         // 加药管道支持调长：渲染后强制按节点模型尺寸同步 DOM，
@@ -324,9 +335,12 @@
   }
 
   function addDeviceNode(svgKey, name, x, y) {
+    var isMonitor = (svgKey === 'H62B' || svgKey === 'H65C');
+    var w = isMonitor ? MONITOR_W : DEV_W;
+    var h = isMonitor ? MONITOR_H : DEV_H;
     return graph.addNode({
       shape: 'device-node',
-      x: x, y: y, width: DEV_W, height: DEV_H,
+      x: x, y: y, width: w, height: h,
       zIndex: 1,
       data: { type: 'device', name: name, svgKey: svgKey }
     });
@@ -375,6 +389,7 @@
     sectionBoxNodes.push(boxNode);
     return boxNode;
   }
+
 
   // ===== 管道避障路由：生成管道时避开池体/设备，在空白走廊走线 =====
   // 思路：收集池体/设备包围盒 → 候选水平走廊（池排间隙/上下方/起终点同行）
@@ -521,7 +536,7 @@
     if (mode === 'pool') {
       items = ['调节池', '反应池', '沉淀池', '厌氧池', '缺氧池', '好氧池', '二沉池'];
     } else {
-      items = ['水泵', '风机', '搅拌机', '曝气盘', '刮泥机', '加药管道', '加药管道竖版'];
+      items = ['水泵', '风机', '搅拌机', '曝气盘', '刮泥机', '加药管道', '加药管道竖版', 'H62B', 'H65C'];
     }
     modalGrid.innerHTML = items.map(function (k) {
       // 竖版加药管道无SVG图元，用CSS迷你预览
@@ -539,11 +554,35 @@
     if (act === 'add-pool') openModal('pool');
     else if (act === 'add-device') openModal('device');
     else if (act === 'add-pipe') toggleConnectMode();
+    else if (act === 'add-dashed') toggleDrawDashMode();
     else if (act === 'del') delSelected();
     else if (act === 'reset') resetLayout();
     else if (act === 'export') exportJson();
     else if (act === 'save') saveConfig();
   });
+
+  // ===== 画虚线模式：点击起点 → 点击终点，生成一条更淡的静态虚线 =====
+  var drawDashMode = false;
+  var dashStart = null;
+  function toggleDrawDashMode() {
+    drawDashMode = !drawDashMode;
+    var btn = document.querySelector('.tool-btn[data-act="add-dashed"]');
+    if (btn) btn.classList.toggle('active', drawDashMode);
+    dashStart = null;
+    if (drawDashMode && connectMode) toggleConnectMode(); // 与连线模式互斥
+    toast(drawDashMode ? '画虚线模式：点击起点 → 点击终点，生成淡静态虚线（Esc 退出）' : '已退出画虚线模式');
+  }
+  function handleDashPoint(x, y) {
+    if (!dashStart) { dashStart = { x: x, y: y }; toast('虚线起点已定，点击终点'); return; }
+    graph.addEdge({
+      source: dashStart,
+      target: { x: x, y: y },
+      attrs: { line: { stroke: 'rgba(63,169,255,.35)', strokeWidth: 1.5, strokeDasharray: '6 6', targetMarker: null } }
+    });
+    dashStart = null;
+    toast('已画一条淡虚线');
+  }
+  graph.on('blank:click', function (e) { if (drawDashMode) handleDashPoint(e.x, e.y); });
 
   // ===== 连线模式：自定义添加流态管道（点起点 → 点终点，方向即流向） =====
   var connectMode = false;
@@ -674,7 +713,7 @@
       });
       obsoleteBoxes.forEach(function (n) { graph.removeNode(n); });
       setTimeout(autoFitAllSections, 120);
-      return true;
+        return true;
     } catch (err) {
       return false; // 配置损坏则回退默认布局
     }
@@ -866,6 +905,7 @@
 
   // 点击池体 → 选中 + 打开历史数据抽屉；连线模式下选择管道起终点
   graph.on('node:click', function (e) {
+    if (drawDashMode) { handleDashPoint(e.x, e.y); return; }
     if (connectMode) {
       handleConnectClick(e.node);
       return;
@@ -893,8 +933,12 @@
       var t2 = e.e && e.e.target;
       if (t2 && t2.closest && t2.closest('.pipe-name')) startEditPipeName(e.node);
       else toast('加药管道：拖动可整体移动，单击“药剂”可编辑文字');
+    } else if (d.type === 'device') {
+      var t3 = e.e && e.e.target;
+      if (t3 && t3.closest && t3.closest('.dev-name')) startEditName(e.node);
+      else toast('监测设备：单击下方名称可编辑，按住可拖动');
     } else {
-      toast('设备节点：' + d.name + '（暂无历史数据曲线）');
+      toast('节点：' + (d.name || ''));
     }
   });
 
@@ -915,18 +959,19 @@
   function startEditName(node) {
     if (connectMode || editingNode) return;
     var d = node.getData();
-    if (!d || d.type !== 'pool') return;
+    if (!d || (d.type !== 'pool' && d.type !== 'device')) return;
+    var isPool = d.type === 'pool';
     var view = graph.findView(node);
-    var nameEl = view && view.container && view.container.querySelector('.pool-name');
+    var nameEl = view && view.container && view.container.querySelector(isPool ? '.pool-name' : '.dev-name');
     if (!nameEl) return;
     // 取消双击前单击触发的抽屉定时器（抽屉会盖住画布并抢走输入框焦点）
     if (pendingDrawerTimer) { clearTimeout(pendingDrawerTimer); pendingDrawerTimer = null; }
-    ensureDatalist();
+    if (isPool) ensureDatalist();
     editingNode = node;
     var input = document.createElement('input');
     input.className = 'pool-name-input';
-    input.setAttribute('list', 'poolNamePresets');
-    input.value = d.poolName || '';
+    if (isPool) input.setAttribute('list', 'poolNamePresets');
+    input.value = isPool ? (d.poolName || '') : (d.name || '');
     nameEl.innerHTML = '';
     nameEl.appendChild(input);
     input.focus(); input.select();
@@ -938,7 +983,7 @@
       if (!editingNode) return;
       var val = input.value.trim();
       if (save && val) {
-        d.poolName = val;
+        if (isPool) d.poolName = val; else d.name = val;
         node.setData(d);
       }
       editingNode = null;
@@ -1246,6 +1291,7 @@
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       if (resizingNode) { exitPipeResize(); return; }
+      if (drawDashMode) { toggleDrawDashMode(); return; }
       if (connectMode) { toggleConnectMode(); return; }
       closeDrawer();
     }

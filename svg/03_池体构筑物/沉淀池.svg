@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#10293B"/>
+    <stop offset="1" stop-color="#071218"/>
+  </linearGradient>
+  <linearGradient id="gBody" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#00C2E8"/>
+    <stop offset="0.55" stop-color="#007BA3"/>
+    <stop offset="1" stop-color="#00445C"/>
+  </linearGradient>
+  <linearGradient id="gMain" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#9FFFFF"/>
+    <stop offset="0.5" stop-color="#00F0FF"/>
+    <stop offset="1" stop-color="#00A0C8"/>
+  </linearGradient>
+  <linearGradient id="gWater" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#7FF3FF" stop-opacity="0.45"/>
+    <stop offset="1" stop-color="#00A0C8" stop-opacity="0.18"/>
+  </linearGradient>
+  <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+    <feGaussianBlur stdDeviation="2.2" result="blur"/>
+    <feMerge>
+      <feMergeNode in="blur"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+  <filter id="soft" x="-60%" y="-60%" width="220%" height="220%">
+    <feGaussianBlur stdDeviation="4"/>
+  </filter>
+</defs>
+<rect x="3" y="3" width="94" height="94" rx="16" fill="url(#bg)"/>
+<rect x="3" y="3" width="94" height="94" rx="16" fill="none" stroke="#00E5FF" stroke-opacity="0.5" stroke-width="1.4" filter="url(#glow)"/>
+<rect x="6.5" y="6.5" width="87" height="87" rx="12" fill="none" stroke="#7FF3FF" stroke-opacity="0.22" stroke-width="0.8"/>
+
+<!-- 池体 -->
+<path d="M22 30 L78 30 L78 62 Q78 70 70 70 L30 70 Q22 70 22 62 Z" fill="url(#gWater)" stroke="#7FF3FF" stroke-opacity="0.7" stroke-width="1.5"/>
+<!-- 泥斗 -->
+<path d="M34 70 L50 78 L66 70" fill="none" stroke="#7FF3FF" stroke-opacity="0.6" stroke-width="1.2"/>
+<path d="M42 76 Q50 74 58 76" fill="none" stroke="#00C2E8" stroke-opacity="0.6" stroke-width="1.2"/>
+<!-- 液面 -->
+<path d="M22 38 Q30 35 40 38 T58 38 T78 38" fill="none" stroke="#9FFFFF" stroke-opacity="0.75" stroke-width="1.4" filter="url(#glow)"/>
+<!-- 刮泥桥 -->
+<line x1="24" y1="66" x2="76" y2="66" stroke="url(#gMain)" stroke-width="2" stroke-linecap="round" filter="url(#glow)"/>
+<line x1="40" y1="66" x2="40" y2="72" stroke="#00F0FF" stroke-width="1.6"/>
+<line x1="60" y1="66" x2="60" y2="72" stroke="#00F0FF" stroke-width="1.6"/>
+<!-- 出水堰 -->
+<path d="M72 30 L76 30 L76 36" stroke="#00E5FF" stroke-opacity="0.6" stroke-width="1.2" fill="none"/>
+<rect x="78" y="32" width="5" height="10" rx="2" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.65" stroke-width="1"/>
+<path d="M84 37 L89 37" stroke="#00E5FF" stroke-opacity="0.6" stroke-width="1.2" stroke-linecap="round"/>
+<!-- 进水管 -->
+<rect x="13" y="33" width="6" height="10" rx="2" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.65" stroke-width="1"/>
+<path d="M11 38 L5 38" stroke="#00E5FF" stroke-opacity="0.6" stroke-width="1.2" stroke-linecap="round"/>
+
+</svg>

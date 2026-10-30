@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#10293B"/>
+    <stop offset="1" stop-color="#071218"/>
+  </linearGradient>
+  <linearGradient id="gBody" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#00C2E8"/>
+    <stop offset="0.55" stop-color="#007BA3"/>
+    <stop offset="1" stop-color="#00445C"/>
+  </linearGradient>
+  <linearGradient id="gMain" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#9FFFFF"/>
+    <stop offset="0.5" stop-color="#00F0FF"/>
+    <stop offset="1" stop-color="#00A0C8"/>
+  </linearGradient>
+  <linearGradient id="gWater" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#7FF3FF" stop-opacity="0.45"/>
+    <stop offset="1" stop-color="#00A0C8" stop-opacity="0.18"/>
+  </linearGradient>
+  <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+    <feGaussianBlur stdDeviation="2.2" result="blur"/>
+    <feMerge>
+      <feMergeNode in="blur"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+  <filter id="soft" x="-60%" y="-60%" width="220%" height="220%">
+    <feGaussianBlur stdDeviation="4"/>
+  </filter>
+</defs>
+<rect x="3" y="3" width="94" height="94" rx="16" fill="url(#bg)"/>
+<rect x="3" y="3" width="94" height="94" rx="16" fill="none" stroke="#00E5FF" stroke-opacity="0.5" stroke-width="1.4" filter="url(#glow)"/>
+<rect x="6.5" y="6.5" width="87" height="87" rx="12" fill="none" stroke="#7FF3FF" stroke-opacity="0.22" stroke-width="0.8"/>
+
+<!-- 连接管段 -->
+<rect x="15" y="52" width="14" height="8" rx="2" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.6" stroke-width="1"/>
+<rect x="71" y="52" width="14" height="8" rx="2" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.6" stroke-width="1"/>
+<!-- 法兰 -->
+<rect x="29" y="48" width="7" height="16" rx="2" fill="none" stroke="#00F0FF" stroke-opacity="0.85" stroke-width="1.5"/>
+<rect x="64" y="48" width="7" height="16" rx="2" fill="none" stroke="#00F0FF" stroke-opacity="0.85" stroke-width="1.5"/>
+<!-- 阀体 -->
+<circle cx="50" cy="56" r="13" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.85" stroke-width="1.3"/>
+<circle cx="50" cy="56" r="9" fill="none" stroke="#9FFFFF" stroke-opacity="0.35" stroke-width="0.8"/>
+<!-- 蝶板 -->
+<line x1="37" y1="56" x2="63" y2="56" stroke="url(#gMain)" stroke-width="3.2" stroke-linecap="round" filter="url(#glow)"/>
+<!-- 阀杆 -->
+<rect x="48" y="29" width="4" height="15" rx="2" fill="url(#gMain)"/>
+<!-- 电动执行器 -->
+<rect x="38" y="19" width="24" height="12" rx="3" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.85" stroke-width="1.2"/>
+<rect x="35" y="16.5" width="30" height="4" rx="2" fill="url(#gMain)"/>
+<circle cx="45" cy="25" r="1.7" fill="#00FF88" filter="url(#glow)"/>
+<circle cx="55" cy="25" r="1.7" fill="#00F0FF" filter="url(#glow)"/>
+<!-- 执行器连接线 -->
+<line x1="44" y1="31" x2="44" y2="36" stroke="#00E5FF" stroke-opacity="0.5" stroke-width="1"/>
+<line x1="56" y1="31" x2="56" y2="36" stroke="#00E5FF" stroke-opacity="0.5" stroke-width="1"/>
+
+</svg>

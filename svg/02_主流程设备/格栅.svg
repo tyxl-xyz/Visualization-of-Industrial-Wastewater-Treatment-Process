@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#10293B"/>
+    <stop offset="1" stop-color="#071218"/>
+  </linearGradient>
+  <linearGradient id="gBody" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#00C2E8"/>
+    <stop offset="0.55" stop-color="#007BA3"/>
+    <stop offset="1" stop-color="#00445C"/>
+  </linearGradient>
+  <linearGradient id="gMain" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#9FFFFF"/>
+    <stop offset="0.5" stop-color="#00F0FF"/>
+    <stop offset="1" stop-color="#00A0C8"/>
+  </linearGradient>
+  <linearGradient id="gWater" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#7FF3FF" stop-opacity="0.45"/>
+    <stop offset="1" stop-color="#00A0C8" stop-opacity="0.18"/>
+  </linearGradient>
+  <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+    <feGaussianBlur stdDeviation="2.2" result="blur"/>
+    <feMerge>
+      <feMergeNode in="blur"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+  <filter id="soft" x="-60%" y="-60%" width="220%" height="220%">
+    <feGaussianBlur stdDeviation="4"/>
+  </filter>
+</defs>
+<rect x="3" y="3" width="94" height="94" rx="16" fill="url(#bg)"/>
+<rect x="3" y="3" width="94" height="94" rx="16" fill="none" stroke="#00E5FF" stroke-opacity="0.5" stroke-width="1.4" filter="url(#glow)"/>
+<rect x="6.5" y="6.5" width="87" height="87" rx="12" fill="none" stroke="#7FF3FF" stroke-opacity="0.22" stroke-width="0.8"/>
+
+<!-- 框架 -->
+<rect x="30" y="18" width="40" height="62" rx="3" fill="url(#gWater)" stroke="#7FF3FF" stroke-opacity="0.7" stroke-width="1.4"/>
+<!-- 栅条 -->
+<line x1="35" y1="22" x2="35" y2="76" stroke="url(#gMain)" stroke-width="2.6" stroke-linecap="round" filter="url(#glow)"/>
+<line x1="41" y1="22" x2="41" y2="76" stroke="url(#gMain)" stroke-width="2.6" stroke-linecap="round"/>
+<line x1="47" y1="22" x2="47" y2="76" stroke="url(#gMain)" stroke-width="2.6" stroke-linecap="round"/>
+<line x1="53" y1="22" x2="53" y2="76" stroke="url(#gMain)" stroke-width="2.6" stroke-linecap="round"/>
+<line x1="59" y1="22" x2="59" y2="76" stroke="url(#gMain)" stroke-width="2.6" stroke-linecap="round"/>
+<line x1="65" y1="22" x2="65" y2="76" stroke="url(#gMain)" stroke-width="2.6" stroke-linecap="round"/>
+<!-- 顶梁 -->
+<rect x="28" y="15" width="44" height="5" rx="2" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.85" stroke-width="1"/>
+<!-- 底梁 -->
+<rect x="28" y="78" width="44" height="4" rx="2" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.6" stroke-width="1"/>
+<!-- 拦截物 -->
+<path d="M38 70 Q43 66 49 69 L53 66 L59 70" fill="none" stroke="#9FFFFF" stroke-opacity="0.75" stroke-width="1.6" stroke-linecap="round"/>
+<!-- 水流（左→右） -->
+<path d="M12 42 Q7 47 12 52" fill="none" stroke="#00F0FF" stroke-opacity="0.5" stroke-width="1.2" stroke-linecap="round"/>
+<path d="M16 39 Q11 47 16 55" fill="none" stroke="#00F0FF" stroke-opacity="0.8" stroke-width="1.2" stroke-linecap="round"/>
+<polygon points="16,55 17.8,50.6 19.6,54.4" fill="#00F0FF" opacity="0.8"/>
+<path d="M74 46 Q80 50 74 54" fill="none" stroke="#00F0FF" stroke-opacity="0.5" stroke-width="1.2" stroke-linecap="round"/>
+
+</svg>

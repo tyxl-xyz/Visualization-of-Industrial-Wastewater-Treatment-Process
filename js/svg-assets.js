@@ -17,3 +17,31 @@ SVG_ASSETS['加药管道'] = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0
 '<path d="M60 52 L60 58 M110 52 L110 58 M230 52 L230 58" stroke="#7fe3ff" stroke-width="3" stroke-linecap="round"/>' +
 '<circle cx="60" cy="60" r="2.4" fill="#9fe8ff"/><circle cx="110" cy="60" r="2.4" fill="#9fe8ff"/><circle cx="230" cy="60" r="2.4" fill="#9fe8ff"/>' +
 '</svg>';
+
+
+// 监测设备（瘦高柜式）：H62B 电镀原水管控装置、H65C 生化原位监测设备
+SVG_ASSETS['H62B'] = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 170" width="100" height="170">' +
+'<rect x="14" y="8" width="72" height="154" rx="6" fill="#10222f" stroke="#3fa9ff" stroke-width="1.5"/>' +
+'<circle cx="82" cy="16" r="2.5" fill="#4cff6b"/>' +
+'<rect x="20" y="22" width="60" height="56" rx="4" fill="#06212f" stroke="#1f6ea8" stroke-width="1"/>' +
+'<rect x="24" y="30" width="36" height="4" fill="#3fa9ff"/><rect x="24" y="38" width="28" height="4" fill="#7fe3ff"/>' +
+'<rect x="24" y="46" width="32" height="4" fill="#3fa9ff"/><rect x="24" y="54" width="24" height="4" fill="#7fe3ff"/>' +
+'<text x="64" y="34" fill="#9fe8ff" font-size="5">COD</text><text x="64" y="42" fill="#9fe8ff" font-size="5">NH3</text>' +
+'<text x="64" y="50" fill="#9fe8ff" font-size="5">pH</text><text x="64" y="58" fill="#9fe8ff" font-size="5">FLOW</text>' +
+'<rect x="34" y="86" width="32" height="6" rx="3" fill="#1f6ea8"/><rect x="34" y="96" width="32" height="6" rx="3" fill="#1f6ea8"/>' +
+'<circle cx="50" cy="124" r="7" fill="none" stroke="#7fe3ff" stroke-width="1.2"/><circle cx="50" cy="124" r="2" fill="#7fe3ff"/>' +
+'<text x="50" y="146" fill="#3fa9ff" font-size="9" text-anchor="middle">H62B</text>' +
+'<rect x="32" y="153" width="36" height="6" rx="2" fill="#1f6ea8"/>' +
+'</svg>';
+SVG_ASSETS['H65C'] = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 170" width="100" height="170">' +
+'<rect x="14" y="8" width="72" height="108" rx="6" fill="#10222f" stroke="#7fe3ff" stroke-width="1.5"/>' +
+'<circle cx="82" cy="16" r="2.5" fill="#ffd24d"/>' +
+'<rect x="20" y="22" width="60" height="44" rx="4" fill="#06212f" stroke="#1f6ea8" stroke-width="1"/>' +
+'<rect x="24" y="30" width="40" height="4" fill="#7fe3ff"/><rect x="24" y="38" width="32" height="4" fill="#7fe3ff"/>' +
+'<text x="70" y="34" fill="#9fe8ff" font-size="5">SV</text><text x="70" y="42" fill="#9fe8ff" font-size="5">SS</text>' +
+'<rect x="34" y="74" width="32" height="6" rx="3" fill="#1f6ea8"/><rect x="34" y="84" width="32" height="6" rx="3" fill="#1f6ea8"/>' +
+'<text x="50" y="106" fill="#7fe3ff" font-size="9" text-anchor="middle">H65C</text>' +
+'<rect x="47" y="116" width="6" height="22" rx="2" fill="#2fb0d8"/>' +
+'<circle cx="50" cy="146" r="9" fill="#0a2530" stroke="#7fe3ff" stroke-width="1.2"/><circle cx="50" cy="146" r="3" fill="#7fe3ff"/>' +
+'<rect x="40" y="154" width="20" height="8" rx="3" fill="#1f6ea8"/>' +
+'</svg>';

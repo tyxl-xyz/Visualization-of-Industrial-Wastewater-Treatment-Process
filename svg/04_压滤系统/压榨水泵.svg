@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#10293B"/>
+    <stop offset="1" stop-color="#071218"/>
+  </linearGradient>
+  <linearGradient id="gBody" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#00C2E8"/>
+    <stop offset="0.55" stop-color="#007BA3"/>
+    <stop offset="1" stop-color="#00445C"/>
+  </linearGradient>
+  <linearGradient id="gMain" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#9FFFFF"/>
+    <stop offset="0.5" stop-color="#00F0FF"/>
+    <stop offset="1" stop-color="#00A0C8"/>
+  </linearGradient>
+  <linearGradient id="gWater" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#7FF3FF" stop-opacity="0.45"/>
+    <stop offset="1" stop-color="#00A0C8" stop-opacity="0.18"/>
+  </linearGradient>
+  <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+    <feGaussianBlur stdDeviation="2.2" result="blur"/>
+    <feMerge>
+      <feMergeNode in="blur"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+  <filter id="soft" x="-60%" y="-60%" width="220%" height="220%">
+    <feGaussianBlur stdDeviation="4"/>
+  </filter>
+</defs>
+<rect x="3" y="3" width="94" height="94" rx="16" fill="url(#bg)"/>
+<rect x="3" y="3" width="94" height="94" rx="16" fill="none" stroke="#00E5FF" stroke-opacity="0.5" stroke-width="1.4" filter="url(#glow)"/>
+<rect x="6.5" y="6.5" width="87" height="87" rx="12" fill="none" stroke="#7FF3FF" stroke-opacity="0.22" stroke-width="0.8"/>
+
+<!-- 底座 -->
+<rect x="28" y="76" width="44" height="6" rx="2" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.5" stroke-width="1"/>
+<!-- 进水管（左） -->
+<rect x="14" y="46" width="12" height="10" rx="2" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.65" stroke-width="1"/>
+<path d="M12 51 L6 51" stroke="#00E5FF" stroke-opacity="0.6" stroke-width="1.2" stroke-linecap="round"/>
+<!-- 泵壳 -->
+<circle cx="40" cy="52" r="14" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.85" stroke-width="1.3" filter="url(#glow)"/>
+<path d="M33 44 Q28 52 34 60" fill="none" stroke="#9FFFFF" stroke-opacity="0.5" stroke-width="1" stroke-linecap="round"/>
+<!-- 叶轮中心 -->
+<circle cx="40" cy="52" r="4" fill="#00F0FF" filter="url(#glow)"/>
+<!-- 高压出水管（顶部） -->
+<rect x="47" y="30" width="6" height="10" rx="2" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.7" stroke-width="1"/>
+<rect x="44" y="24" width="12" height="8" rx="2" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.7" stroke-width="1"/>
+<!-- 高压水流 -->
+<path d="M50 21 Q54 16 50 11" fill="none" stroke="#00F0FF" stroke-width="1.6" stroke-linecap="round" filter="url(#glow)"/>
+<polygon points="50,9 46,13.5 54,13.5" fill="#00F0FF" filter="url(#glow)"/>
+<!-- 压力表（泵壳左上方，高压特征） -->
+<circle cx="26" cy="34" r="5.5" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.8" stroke-width="1.2"/>
+<line x1="26" y1="34" x2="28" y2="31" stroke="#00F0FF" stroke-width="1.3" stroke-linecap="round"/>
+<circle cx="26" cy="34" r="1.2" fill="#00F0FF"/>
+<line x1="26" y1="39.5" x2="26" y2="44" stroke="#00E5FF" stroke-opacity="0.5" stroke-width="1"/>
+<!-- 电机（右） -->
+<rect x="58" y="44" width="20" height="16" rx="4" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.85" stroke-width="1.2"/>
+<line x1="62" y1="49" x2="74" y2="49" stroke="#9FFFFF" stroke-opacity="0.45" stroke-width="1"/>
+<line x1="62" y1="54" x2="71" y2="54" stroke="#9FFFFF" stroke-opacity="0.25" stroke-width="1"/>
+<!-- 旋转弧线 -->
+<path d="M47 60 A11 11 0 0 1 41 62.5" fill="none" stroke="#00F0FF" stroke-width="1.3" stroke-linecap="round" filter="url(#glow)"/>
+<polygon points="41,62.5 46.5,61.5 44.5,66" fill="#00F0FF" filter="url(#glow)"/>
+
+</svg>

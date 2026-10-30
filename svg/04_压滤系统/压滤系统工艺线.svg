@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 225" width="540" height="225">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#10293B"/>
+    <stop offset="1" stop-color="#071218"/>
+  </linearGradient>
+  <linearGradient id="gBody" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#00C2E8"/>
+    <stop offset="0.55" stop-color="#007BA3"/>
+    <stop offset="1" stop-color="#00445C"/>
+  </linearGradient>
+  <linearGradient id="gMain" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#9FFFFF"/>
+    <stop offset="0.5" stop-color="#00F0FF"/>
+    <stop offset="1" stop-color="#00A0C8"/>
+  </linearGradient>
+  <filter id="glow" filterUnits="userSpaceOnUse" x="0" y="0" width="540" height="225">
+    <feGaussianBlur stdDeviation="2.2" result="blur"/>
+    <feMerge>
+      <feMergeNode in="blur"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+</defs>
+<!-- 背景卡 -->
+<rect x="4" y="4" width="532" height="217" rx="14" fill="url(#bg)"/>
+<rect x="4" y="4" width="532" height="217" rx="14" fill="none" stroke="#00E5FF" stroke-opacity="0.5" stroke-width="1.4" filter="url(#glow)"/>
+<!-- 标题 -->
+<text x="18" y="28" font-size="11" fill="#9FFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" letter-spacing="3">压滤系统 · 工艺线</text>
+
+<!-- ================= 压榨水泵（左上，高压水管垂直走空白区再水平接入滤板左侧） ================= -->
+<text x="108" y="13" font-size="10" fill="#C9F4FF" font-family="Microsoft YaHei, PingFang SC, sans-serif">压榨水泵</text>
+<!-- 泵壳 -->
+<circle cx="150" cy="30" r="13" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.85" stroke-width="1.2" filter="url(#glow)"/>
+<circle cx="150" cy="30" r="6.5" fill="none" stroke="#00F0FF" stroke-opacity="0.55" stroke-width="1"/>
+<circle cx="150" cy="30" r="2.5" fill="#00F0FF" filter="url(#glow)"/>
+<!-- 压力表 -->
+<circle cx="133" cy="20" r="5" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.8" stroke-width="1"/>
+<line x1="133" y1="20" x2="134.8" y2="17.5" stroke="#00F0FF" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="133" y1="25" x2="133" y2="27" stroke="#00E5FF" stroke-opacity="0.5" stroke-width="0.8"/>
+<!-- 电机 -->
+<rect x="160" y="23" width="15" height="14" rx="3" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.8" stroke-width="1.1"/>
+<line x1="163" y1="28" x2="172" y2="28" stroke="#9FFFFF" stroke-opacity="0.4" stroke-width="0.9"/>
+<line x1="163" y1="33" x2="169" y2="33" stroke="#9FFFFF" stroke-opacity="0.22" stroke-width="0.9"/>
+<!-- 高压水管：垂直下行（滤板左侧空白区）→ 水平接入滤板左侧 -->
+<line x1="150" y1="43" x2="150" y2="66" stroke="#00F0FF" stroke-opacity="0.95" stroke-width="2.2" stroke-linecap="round" filter="url(#glow)"/>
+<polygon points="150,69 146,62 154,62" fill="#00F0FF" filter="url(#glow)"/>
+<line x1="150" y1="66" x2="188" y2="66" stroke="#00F0FF" stroke-opacity="0.95" stroke-width="2.2" stroke-linecap="round" filter="url(#glow)"/>
+<polygon points="191,66 184.5,62.5 184.5,69.5" fill="#00F0FF" filter="url(#glow)"/>
+<text x="104" y="56" font-size="8" fill="#7FF3FF" font-family="Microsoft YaHei, PingFang SC, sans-serif">高压压榨水</text>
+
+<!-- ================= 进料隔膜泵（左侧） ================= -->
+<text x="52" y="202" font-size="10" fill="#C9F4FF" font-family="Microsoft YaHei, PingFang SC, sans-serif">进料隔膜泵</text>
+<!-- 污泥进料 -->
+<text x="10" y="88" font-size="8" fill="#7FF3FF" font-family="Microsoft YaHei, PingFang SC, sans-serif">污泥进料</text>
+<line x1="8" y1="102" x2="30" y2="102" stroke="#00F0FF" stroke-width="1.6" stroke-linecap="round"/>
+<polygon points="32,102 26,98 26,106" fill="#00F0FF"/>
+<!-- 进料管 -->
+<rect x="34" y="96" width="12" height="12" rx="2" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.7" stroke-width="1"/>
+<!-- 左膜腔 -->
+<circle cx="54" cy="102" r="11" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.85" stroke-width="1.2"/>
+<circle cx="54" cy="102" r="6" fill="none" stroke="#00F0FF" stroke-opacity="0.6" stroke-width="1"/>
+<!-- 泵体 -->
+<rect x="60" y="91" width="26" height="22" rx="4" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.85" stroke-width="1.2"/>
+<!-- 右膜腔 -->
+<circle cx="98" cy="102" r="11" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.85" stroke-width="1.2"/>
+<circle cx="98" cy="102" r="6" fill="none" stroke="#00F0FF" stroke-opacity="0.6" stroke-width="1"/>
+<!-- 电机 -->
+<rect x="66" y="77" width="14" height="12" rx="3" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.8" stroke-width="1.1"/>
+<!-- 出口管 -->
+<rect x="111" y="96" width="14" height="12" rx="2" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.7" stroke-width="1"/>
+<!-- 流向（进料泵→压滤机） -->
+<line x1="127" y1="102" x2="166" y2="102" stroke="#00F0FF" stroke-width="1.6" stroke-linecap="round"/>
+<polygon points="168,102 162,98 162,106" fill="#00F0FF"/>
+<text x="138" y="94" font-size="8" fill="#7FF3FF" font-family="Microsoft YaHei, PingFang SC, sans-serif">污泥压滤</text>
+
+<!-- ================= 板框压滤机（高平台 + 泥斗） ================= -->
+<text x="222" y="202" font-size="10" fill="#C9F4FF" font-family="Microsoft YaHei, PingFang SC, sans-serif">板框压滤机</text>
+<!-- 进料管接入 -->
+<rect x="170" y="96" width="14" height="12" rx="2" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.7" stroke-width="1"/>
+<!-- 顶梁 -->
+<rect x="182" y="52" width="92" height="6" rx="2" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.85" stroke-width="1"/>
+<!-- 滤板排 -->
+<rect x="188" y="58" width="8" height="36" rx="1" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.75" stroke-width="1"/>
+<rect x="197.5" y="58" width="8" height="36" rx="1" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.75" stroke-width="1"/>
+<rect x="207" y="58" width="8" height="36" rx="1" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.75" stroke-width="1"/>
+<rect x="216.5" y="58" width="8" height="36" rx="1" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.75" stroke-width="1"/>
+<rect x="226" y="58" width="8" height="36" rx="1" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.75" stroke-width="1"/>
+<rect x="235.5" y="58" width="8" height="36" rx="1" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.75" stroke-width="1"/>
+<rect x="245" y="58" width="8" height="36" rx="1" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.75" stroke-width="1"/>
+<rect x="254.5" y="58" width="8" height="36" rx="1" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.75" stroke-width="1"/>
+<rect x="264" y="58" width="8" height="36" rx="1" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.75" stroke-width="1"/>
+<!-- 板间缝隙 -->
+<line x1="192" y1="58" x2="192" y2="94" stroke="#00E5FF" stroke-opacity="0.4" stroke-width="0.7"/>
+<line x1="201.5" y1="58" x2="201.5" y2="94" stroke="#00E5FF" stroke-opacity="0.4" stroke-width="0.7"/>
+<line x1="211" y1="58" x2="211" y2="94" stroke="#00E5FF" stroke-opacity="0.4" stroke-width="0.7"/>
+<line x1="220.5" y1="58" x2="220.5" y2="94" stroke="#00E5FF" stroke-opacity="0.4" stroke-width="0.7"/>
+<line x1="230" y1="58" x2="230" y2="94" stroke="#00E5FF" stroke-opacity="0.4" stroke-width="0.7"/>
+<line x1="239.5" y1="58" x2="239.5" y2="94" stroke="#00E5FF" stroke-opacity="0.4" stroke-width="0.7"/>
+<line x1="249" y1="58" x2="249" y2="94" stroke="#00E5FF" stroke-opacity="0.4" stroke-width="0.7"/>
+<line x1="258.5" y1="58" x2="258.5" y2="94" stroke="#00E5FF" stroke-opacity="0.4" stroke-width="0.7"/>
+<!-- 液压缸 -->
+<rect x="276" y="58" width="15" height="36" rx="3" fill="url(#gBody)" stroke="#7FF3FF" stroke-opacity="0.85" stroke-width="1.2" filter="url(#glow)"/>
+<rect x="281" y="64" width="4" height="24" rx="2" fill="url(#gMain)"/>
+<!-- 高平台横梁（纯亮色描边，避免渐变在零高度线上坍缩） -->
+<line x1="176" y1="96" x2="300" y2="96" stroke="#00F0FF" stroke-opacity="0.95" stroke-width="2.2" stroke-linecap="round" filter="url(#glow)"/>
+<!-- 支撑腿 -->
+<line x1="186" y1="96" x2="186" y2="158" stroke="#00E5FF" stroke-opacity="0.6" stroke-width="1.5"/>
+<line x1="290" y1="96" x2="290" y2="158" stroke="#00E5FF" stroke-opacity="0.6" stroke-width="1.5"/>
+<!-- 斜撑加固 -->
+<line x1="186" y1="96" x2="196" y2="104" stroke="#00E5FF" stroke-opacity="0.35" stroke-width="1"/>
+<line x1="290" y1="96" x2="280" y2="104" stroke="#00E5FF" stroke-opacity="0.35" stroke-width="1"/>
+<!-- 泥斗（倒梯形漏斗） -->
+<path d="M202 98 L186 152 L292 152 L276 98 Z" fill="url(#gBody)" fill-opacity="0.3" stroke="#00F0FF" stroke-opacity="0.7" stroke-width="1.2" filter="url(#glow)"/>
+<!-- 泥饼落料 -->
+<rect x="208" y="108" width="6" height="7" rx="1" fill="none" stroke="#9FFFFF" stroke-opacity="0.45" stroke-width="1"/>
+<rect x="226" y="122" width="5" height="6" rx="1" fill="none" stroke="#9FFFFF" stroke-opacity="0.35" stroke-width="1"/>
+<rect x="258" y="112" width="5" height="6" rx="1" fill="none" stroke="#9FFFFF" stroke-opacity="0.3" stroke-width="1"/>
+<!-- 泥斗底部出料 -->
+<line x1="239" y1="154" x2="239" y2="174" stroke="#00F0FF" stroke-width="1.5" stroke-linecap="round"/>
+<polygon points="239,177 235,170 243,170" fill="#00F0FF"/>
+<text x="248" y="186" font-size="8" fill="#7FF3FF" font-family="Microsoft YaHei, PingFang SC, sans-serif">泥饼外运</text>
+
+<!-- 滤液回流 -->
+<line x1="295" y1="70" x2="318" y2="70" stroke="#00E5FF" stroke-opacity="0.7" stroke-width="1.4" stroke-linecap="round"/>
+<polygon points="320,70 314,66.5 314,73.5" fill="#00F0FF" opacity="0.85"/>
+<text x="296" y="62" font-size="8" fill="#7FF3FF" font-family="Microsoft YaHei, PingFang SC, sans-serif">滤液回流</text>
+</svg>

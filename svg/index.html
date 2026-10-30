@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智维云-污水治理版 · SVG 工艺图元库</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: radial-gradient(ellipse at 50% 0%, #0d2233 0%, #060f18 60%, #04090f 100%);
+    color: #c9f4ff;
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    padding: 40px 24px 60px;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 36px; }
+  header h1 {
+    font-size: 26px; font-weight: 600; letter-spacing: 3px;
+    background: linear-gradient(90deg, #9fffff, #00f0ff, #00c2e8);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 18px rgba(0,240,255,.35);
+    margin-bottom: 10px;
+  }
+  header p { color: #6fb3c4; font-size: 13px; letter-spacing: 1px; }
+  .section { margin-bottom: 42px; }
+  .section-title {
+    font-size: 16px; font-weight: 600; color: #9fffff;
+    padding-left: 12px; margin-bottom: 16px;
+    border-left: 3px solid #00f0ff;
+    letter-spacing: 2px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 18px;
+  }
+  .card {
+    background: rgba(9, 24, 36, .72);
+    border: 1px solid rgba(0, 229, 255, .28);
+    border-radius: 14px;
+    padding: 16px 10px 12px;
+    text-align: center;
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 240, 255, .22), 0 0 0 1px rgba(0, 240, 255, .5);
+  }
+  .card img { width: 100%; max-width: 120px; display: block; margin: 0 auto 12px; }
+  .card .name { font-size: 13px; color: #bfeefc; letter-spacing: 1px; }
+  footer { text-align: center; color: #47788a; font-size: 12px; margin-top: 20px; letter-spacing: 1px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p style="margin-bottom:8px"><a href="/" style="color:#6fb3c4;text-decoration:none">&#8592; 返回工艺流程大屏</a></p>
+    <h1>智维云-污水治理版 · SVG 工艺图元库</h1>
+    <p>配合 X6 图编辑引擎使用 · 深空青科技风（青色渐变 + 外发光 + 线框建模）</p>
+  </header>
+
+  <div class="section">
+    <div class="section-title">01 · 池体挂载设备</div>
+    <div class="grid">
+      <div class="card"><img src="01_池体挂载设备/物化搅拌机.svg" alt="物化搅拌机"><div class="name">物化搅拌机</div></div>
+      <div class="card"><img src="01_池体挂载设备/生化潜水搅拌机.svg" alt="生化潜水搅拌机"><div class="name">生化潜水搅拌机</div></div>
+      <div class="card"><img src="01_池体挂载设备/沉淀池刮泥机.svg" alt="沉淀池刮泥机"><div class="name">沉淀池刮泥机</div></div>
+      <div class="card"><img src="01_池体挂载设备/曝气盘.svg" alt="曝气盘"><div class="name">曝气盘</div></div>
+      <div class="card"><img src="01_池体挂载设备/自动阀门.svg" alt="自动阀门"><div class="name">自动阀门</div></div>
+      <div class="card"><img src="01_池体挂载设备/传感器过程仪表.svg" alt="传感器过程仪表"><div class="name">传感器过程仪表</div></div>
+      <div class="card"><img src="01_池体挂载设备/曝气池.svg" alt="曝气池"><div class="name">曝气池</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">02 · 主流程设备</div>
+    <div class="grid">
+      <div class="card"><img src="02_主流程设备/格栅.svg" alt="格栅"><div class="name">格栅</div></div>
+      <div class="card"><img src="02_主流程设备/水泵.svg" alt="水泵"><div class="name">水泵</div></div>
+      <div class="card"><img src="02_主流程设备/风机.svg" alt="风机"><div class="name">风机</div></div>
+      <div class="card"><img src="02_主流程设备/压滤机.svg" alt="压滤机"><div class="name">压滤机</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">03 · 池体构筑物</div>
+    <div class="grid">
+      <div class="card"><img src="03_池体构筑物/调节池.svg" alt="调节池"><div class="name">调节池</div></div>
+      <div class="card"><img src="03_池体构筑物/反应池.svg" alt="反应池"><div class="name">反应池</div></div>
+      <div class="card"><img src="03_池体构筑物/沉淀池.svg" alt="沉淀池"><div class="name">沉淀池</div></div>
+      <div class="card"><img src="03_池体构筑物/厌氧池.svg" alt="厌氧池"><div class="name">厌氧池</div></div>
+      <div class="card"><img src="03_池体构筑物/缺氧池.svg" alt="缺氧池"><div class="name">缺氧池</div></div>
+      <div class="card"><img src="03_池体构筑物/二沉池.svg" alt="二沉池"><div class="name">二沉池</div></div>
+      <div class="card"><img src="01_池体挂载设备/曝气池.svg" alt="曝气池"><div class="name">曝气池</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">04 · 压滤系统</div>
+    <div class="grid">
+      <div class="card"><img src="04_压滤系统/板框压滤机.svg" alt="板框压滤机"><div class="name">板框压滤机</div></div>
+      <div class="card"><img src="04_压滤系统/压榨水泵.svg" alt="压榨水泵"><div class="name">压榨水泵</div></div>
+      <div class="card"><img src="04_压滤系统/隔膜进料泵.svg" alt="隔膜进料泵"><div class="name">隔膜进料泵</div></div>
+    </div>
+    <div style="margin-top:16px;"><img src="04_压滤系统/压滤系统工艺线.svg" alt="压滤系统工艺线" style="width:100%; max-width:680px; display:block; margin:0 auto; border:1px solid rgba(0,229,255,.28); border-radius:14px;"></div>
+    <div style="text-align:center; margin-top:10px; color:#bfeefc; font-size:13px;">压滤系统 · 工艺线（整条流程）</div>
+  </div>
+
+  <footer>智维云-污水治理版 · 可视化层 · 2026-09-01 v3.1（新增压滤系统工艺线）</footer>
+</div>
+</body>
+</html>

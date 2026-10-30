@@ -29,16 +29,14 @@
       id: 'fanying1', name: '反应池1', section: '物化段', svg: '反应池', status: 'normal',
       params: [
         { key: 'ph', name: 'pH', unit: '', range: [6.5, 8.5] },
-        { key: 'orp', name: 'ORP', unit: 'mV', range: [-80, 120] },
-        { key: 'cod', name: 'COD', unit: 'mg/L', range: [60, 180] }
+        { key: 'ec', name: '电导率', unit: 'uS/cm', range: [500, 3000] }
       ]
     },
     {
       id: 'fanying2', name: '反应池2', section: '物化段', svg: '反应池', status: 'abnormal',
       params: [
         { key: 'ph', name: 'pH', unit: '', range: [6.5, 8.5] },
-        { key: 'orp', name: 'ORP', unit: 'mV', range: [-80, 120] },
-        { key: 'cod', name: 'COD', unit: 'mg/L', range: [60, 180] }
+        { key: 'ec', name: '电导率', unit: 'uS/cm', range: [500, 3000] }
       ]
     },
     {
